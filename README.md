@@ -14,11 +14,12 @@ There is 1 manual step:
 
 ## In order, here are the steps:
   * Create a Master processing file (csv format: [MRIscanlist.csv](https://github.com/mdbudde/BuddeDoDMRIprocessing/MRIscanlist.csv)) in the format of:\
-        subject, session, t2scan, t1scan, aslscan, ...\
-        DOD1, DOD1_A, 3, 4, 5, ...\
-        DOD1, DOD1_B, 3, 4, 6, ...\
+        Subject,Session,t2sag,t2ax,mge,dti,dde,rot180 \
+        CSCI07,CSCI07_1D,3,6,9,10,24,True \
+        CSCI08,CSCI08_1D,3,4,5,7,6,True \
+        CSCI09,CSCI09_1D,3,4,5,7,6,True \
         ...\
-    where the subject/session is identical to that input on the scanner, and the numbers indicate the scan number (bruker) for each metric/scan.
+    where the subject/session is identical to that input on the scanner, and the numbers indicate the scan number (bruker) for each metric/scan. The scan number helps to find and convert from the MRI protocol data to a more generic notation (BIDS-like, but not quite).
 
 
   * Process all maps, DWI, T2, MGE. This uses matlab and qMRIlab and FSL, protocol-specific inputs to these tools are in this file for each scan type. In the scanlist, an additional column can be added with a True or 1 flag to indicate the entire set of images should be rotated by 180 degrees if the wrong prone/supine was used on the scanner.\  
