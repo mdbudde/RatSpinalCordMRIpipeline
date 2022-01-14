@@ -1,7 +1,19 @@
 #!/usr/bin/env python
 """
 ==============
+Interface used to spatially align data to a rat spinal cord template.
 
+Very briefly, it:
+    using the sct_register_to_template:
+    - straightens the spinal cord using intra-spinal labels at each vertebral level.
+    - aligns these to corresponding labels in the rat spinal cord template.
+    using sct_register_multimodal:
+    - initializes the t2 weighted image using the above registration parameters (warp) and
+        further warps the image to the template using image intensities.
+    - does the same for each of the other contrasts. Noting in this example one of the diffusion weighted images (mean filter image from dde)
+        has the best SNR and wm/gm contrast, so it is use for all EPI-based registration.
+
+    Finally does some cropping to the cervical cord level since the template includes the whole cervical to lumbar cord.
 
 """
 

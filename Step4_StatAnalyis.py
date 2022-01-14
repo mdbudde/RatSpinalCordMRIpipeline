@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 """
 ==============
-Script for FSL randomize - Two-Group Difference Adjusted for Covariate
-Covariates are mean centered within groups in this model by subtracting the group mean from each individual value.
-https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/statistics/center.html#when-to-center-within-or-across-groups
+Script for FSL randomize - Regression basics
+MDB, 10/25/2021
 
-MDB and BPM, 10/25/2021
-
-use file AdditionalFiles/MRIScanLog_ABC.csv
+use file AdditionalFiles/MRIScanLog_ABC.csv which includes any possible regressors as columns.
 
 Tell python where to find the appropriate functions.
 """
@@ -38,14 +35,55 @@ from nipype.interfaces.base import BaseInterfaceInputSpec, BaseInterface, File, 
 
 
 
-
+#number of simultaneous threads to parallelize the processing.
 NProcs = 3
 
+#number of permutations for fsl randomise, use low numbers for testing scripts, > 1000 for final computations.
 nperms = 20
 
 
 runList = ['Ax'] #'Sag','Ax' for both
 
+
+"""
+Regressorlist are a list of columns in the csv file to include as regressors or covariates in the analysis.
+Each line of the regressorlist is a new analysis/model to run seperately.
+A column of ones is recommended to include in the csv file and in most models (not implicitly created in here)
+
+To run, for example, a voxelwise correlation between a regressor in column 3, include:
+regressorlist = [[0,2]]
+
+contrastlist must match the regressorlist and if familiar with fsl randomise it should be intuitive. To do the positive
+regression model from the above example, include:
+contrastlist = [[0, 1]]
+
+
+So to run multiple regressors and contrasts do something like:
+regressorlist = [[0,2], [0, 2], [0, 2, 3], [0, 2, 3]]
+
+contrastlist = [[0, 1], [0, -1],[0, 1, 0], [0, -1, 0]]
+
+which runs regressor 3 from the file as positive and negative contrasts, and includes regressor 4 as a covariate in the last 2 runs.
+
+This allows a lot of flexibility, but may not work for every scenario.
+
+group contrasts can be done with:
+
+regressorlist = [[0, 1]]
+contrastlist = [[1, -1]]
+where the columns in the csv file include something like:
+
+1, 0
+1, 0
+1, 0
+0, 1
+0, 1
+0, 1
+
+simple, eh? yeah, some nipype/fsl/python knowledge will be needed to do anything more challenging and/or suited to your design.
+
+
+"""
 #regressors and contrast must match one another
 #regressor numbers are from the behav part of the input file.
 # in this example, the columns get everything from column 8 and greater (zero is first column!)
@@ -174,13 +212,10 @@ class GenModels(BaseInterface):
 
 
 
-
 #some generic settings that don't need modification
 thisfilepath = os.path.abspath(os.path.dirname(__file__))
 configpath = os.path.abspath(os.path.join(thisfilepath,'config'))
 templatepath = os.path.abspath(os.path.join(thisfilepath, 'Templates/RatHistoAtlas/template/'))
-#t2template  = os.path.abspath(os.path.join(thisfilepath,'Templates','HarrisAtlas2020Update68GM18WM','T2Brain_ReorientResizeSmoothed_p3xp3xp3.nii.gz'))
-#t2brainmask = os.path.abspath(os.path.join(thisfilepath,'Templates','HarrisAtlas2020Update68GM18WM','T2Brain_ReorientResizeSmoothedMasked_p3xp3xp3.nii.gz'))
 
 
 def getFullProcessingList():

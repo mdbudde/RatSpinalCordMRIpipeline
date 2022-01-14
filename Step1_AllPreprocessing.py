@@ -4,9 +4,34 @@
 All  preprocessing pipeline
 ==============
 
-Assumes data inputs of:
-    ie file phase: interleaved label control image in phase format
-        (real label, real control, imag label, imag control)
+Assumes data is organized in a main folder as:
+    subject1
+        session1
+            t2sag
+                t2sag_echo1.nii.gz
+                t2sag_echo2.nii.gz
+                t2sag_echo3.nii.gz
+            t2ax
+                t2ax_echo1.nii.gz
+                t2ax_echo2.nii.gz
+                t2ax_echo3.nii.gz
+            dti
+                dti.nii.gz
+            dde
+                dde.nii.gz
+            mge
+                mge_echo1.nii.gz
+                mge_echo2.nii.gz
+                mge_echo3.nii.gz
+                mge_echo4.nii.gz
+                ...
+        session2
+            t2sag
+    ...
+    ...
+
+
+        Note that the processing routines (this package) can be separate from the location of the data itself.
 
         Uses Matlab nipype interface to process the images
 
@@ -15,7 +40,7 @@ Assumes data inputs of:
 """
 Tell python where to find the appropriate functions.
 """
- 
+
 import os  # system functions
 import argparse
 import csv
@@ -85,11 +110,11 @@ subject_list,session_list = getProcessingList()
 
 
 info = dict(
-    dti_file=[['subject_id', 'session_id', 'dti', 'dti']],  #subject/subject_session/ie/ie_phase.nii
-    dde_file=[['subject_id', 'session_id', 'dde', 'dde']],  #subject/subject_session/ie/ie_phase.nii
-    t2sag_files=[['subject_id', 'session_id', 't2sag', 't2sag']],  #subject/subject_session/ie/ie_phase.nii
-    t2ax_files=[['subject_id', 'session_id', 't2ax', 't2ax']],  #subject/subject_session/ie/ie_phase.nii
-    mge_files=[['subject_id', 'session_id', 'mge', 'mge_echo']]  #subject/subject_session/ie/ie_phase.nii
+    dti_file=[['subject_id', 'session_id', 'dti', 'dti']],
+    dde_file=[['subject_id', 'session_id', 'dde', 'dde']],
+    t2sag_files=[['subject_id', 'session_id', 't2sag', 't2sag']],
+    t2ax_files=[['subject_id', 'session_id', 't2ax', 't2ax']],
+    mge_files=[['subject_id', 'session_id', 'mge', 'mge_echo']]
     )
 
 datasource = pe.Node(
@@ -149,7 +174,6 @@ preproc.connect(datasource, 'mge_files', inputnode, 'mge_files')
 DTI
 """
 mlabDTI = pe.Node(interface=DWIMapsMatlab(),name='mlabDTI')
-#assumes the matlab file is in the same directory as this script, hence __file__ is the current file
 mlabDTI.inputs.script_file = thisfilepath + '/DWI_fADCmap.m'
 mlabDTI.inputs.bvecs_file = os.path.join(configpath,'dti.bvecs')
 mlabDTI.inputs.bvals_file = os.path.join(configpath,'dti.bvals')
@@ -165,7 +189,6 @@ preproc.connect(inputnode,'dti_file',mlabDTI,'dwi_file')
 fDWI, single axis
 """
 mlabDfWI = pe.Node(interface=DWIMapsMatlab(),name='mlabDfWI')
-#assumes the matlab file is in the same directory as this script, hence __file__ is the current file
 mlabDfWI.inputs.script_file = thisfilepath + '/DWI_fADCmap.m'
 mlabDfWI.inputs.bvecs_file = os.path.join(configpath,'fdwi.bvecs')
 mlabDfWI.inputs.bvals_file = os.path.join(configpath,'fdwi.bvals')
@@ -181,7 +204,6 @@ preproc.connect(inputnode,'dde_file',mlabDfWI,'dwi_file')
 T2 Sagittal maps
 """
 mlabT2sag = pe.Node(interface=T2MapMatlab(),name='mlabT2sag')
-#assumes the matlab file is in the same directory as this script, hence __file__ is the current file
 mlabT2sag.inputs.script_file = thisfilepath + '/T2map.m'
 mlabT2sag.inputs.tetimes_file = os.path.join(configpath,'t2sag.tetimes')
 mlabT2sag.inputs.matlabpath = matlabpath
@@ -192,23 +214,12 @@ preproc.connect(inputnode,'t2sag_files',mlabT2sag,'in_files')
 T2 Axial maps
 """
 mlabT2ax = pe.Node(interface=T2MapMatlab(),name='mlabT2ax')
-#assumes the matlab file is in the same directory as this script, hence __file__ is the current file
 mlabT2ax.inputs.script_file = thisfilepath + '/T2map.m'
 mlabT2ax.inputs.tetimes_file = os.path.join(configpath,'t2ax.tetimes')
 mlabT2ax.inputs.matlabpath = matlabpath
 mlabT2ax.inputs.localmatlabpath = matlabtoolspath
 preproc.connect(inputnode,'t2ax_files',mlabT2ax,'in_files')
 
-"""
-T2* 3D maps
-"""
-#mlabT2star = pe.Node(interface=T2MapMatlab(),name='mlabT2star')
-#assumes the matlab file is in the same directory as this script, hence __file__ is the current file
-#mlabT2star.inputs.script_file = thisfilepath + '/T2map.m'
-#mlabT2star.inputs.tetimes_file = os.path.join(configpath,'t2star.tetimes')
-#mlabT2star.inputs.matlabpath = matlabpath
-#mlabT2star.inputs.localmatlabpath = matlabtoolspath
-#preproc.connect(inputnode,'mge_files',mlabT2star,'in_files')
 
 """
 MGE mean across time
@@ -246,7 +257,6 @@ preproc.connect(mlabT2sag,'t2map_file',datasink,'t2')
 preproc.connect(mlabT2ax,'t2map_file',datasink,'t2.@ax')
 
 preproc.connect(mgeMean,'out_file',datasink,'mge')
-#preproc.connect(mlabT2star,'t2map_file',datasink,'mge.@t2star')
 
 if __name__ == '__main__':
     preproc.run()
