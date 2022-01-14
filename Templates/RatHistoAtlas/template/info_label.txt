@@ -1,0 +1,18 @@
+# Template labels
+# Keyword=IndivLabels (Please DO NOT change this line)
+# ID, name, file
+0, T1-weighted template, RatHistoAtlas_t1.nii.gz
+1, T2-weighted template, RatHistoAtlas_t2.nii.gz
+2, T2S-weighted template, RatHistoAtlas_t2s.nii.gz
+3, spinal cord mask (binary), RatHistoAtlas_cord.nii.gz
+4, white matter mask (probabilistic), RatHistoAtlas_wm.nii.gz
+5, gray matter mask (probabilistic), RatHistoAtlas_gm.nii.gz
+6, cerebrospinal fluid mask (binary), RatHistoAtlas_csf.nii.gz
+7, spinal cord mask with discrete vertebral levels, RatHistoAtlas_levels.nii.gz
+8, spinal cord mask with continuous vertebral levels, RatHistoAtlas_levels_continuous.nii.gz
+13, spinal cord centerline, RatHistoAtlas_centerline.nii.gz
+14, point-wise spinal level labels, RatHistoAtlas_label_spinal_levels.nii.gz
+15, cervical cord mask (binary), RatHistoAtlas_levels_cervical.nii.gz
+16, thoracic cord mask (binary), RatHistoAtlas_levels_thoracic.nii.gz
+17, lumbar cord mask (binary), RatHistoAtlas_levels_lumbar.nii.gz
+
