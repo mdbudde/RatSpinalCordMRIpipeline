@@ -15,6 +15,20 @@ Very briefly, it:
 
     Finally does some cropping to the cervical cord level since the template includes the whole cervical to lumbar cord.
 
+
+
+Note, the GenUnrotateMatrix is the least intuitive feature of this registration process.
+In animal spinal cord MRI, often the animal can be twisted or not well-aligned in either the prone
+or supine position.  It is also really difficult to automate in-plane rotations and/or slice-by-slice rotations (torsion)
+since the spinal cord anatomy has somewhat limited features to promote that alignment (unlike the brain for example).
+To provide a solution, we exploit the fact that the scanner operator will align the sagittal images perpendicular to the cord. The GenUnrotateMatrix
+interface obtains the rotation matix of that scan relative to the normal x,y,z coordinate system of the magnet itself. The in-plane component of that
+rotation matrix is used to 'unrotate' all of the images from that scan.  Effectively, this ensures that the dorsal-ventral
+aspect of the cord points along the y axis (up-down) as a starting point.  All other registration parameters start after that step and basically
+use the parameters of the spinal cord toolbox.
+
+NOTE: We had to modify the sct_register_to_template file directly to sample at 0.1x0.1x0.1 instead of the default 1x1x1mm used for humans.
+
 """
 
 """

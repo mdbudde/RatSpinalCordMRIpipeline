@@ -2,9 +2,14 @@
 """
 ==============
 Script for FSL randomize - Regression basics
-MDB, 10/25/2021
 
 use file AdditionalFiles/MRIScanLog_ABC.csv which includes any possible regressors as columns.
+
+Interfacing a nipype statistical analysis was generally more challenging and project/experiment specific
+compared to subject/data-specific pipelines like processing and registration.
+This is shared here as an example, but may not fully replicate the statistical analysis.
+
+
 
 Tell python where to find the appropriate functions.
 """
@@ -92,22 +97,6 @@ simple, eh? yeah, some nipype/fsl/python knowledge will be needed to do anything
 
 
 regressorlist = [
-                # [0, 3],
-                #  [0, 3],
-                #  [0, 4],
-                #  [0, 4],
-                #  [0, 7],
-                #  [0, 7],
-                #  [0, 8],
-                #  [0, 8],
-                #  [0, 3, 4],
-                #  [0, 3, 4],
-                #  [0, 5, 6],
-                #  [0, 5, 6],
-                #  [0, 11],
-                #  [0, 11],
-                #  [0, 12],
-                #  [0, 12],
                  [0, 3, 13],
                  [0, 3, 13],
                  [0, 4, 13],
@@ -118,22 +107,6 @@ regressorlist = [
                   [0, 7, 13]]
 
 contrastlist = [
-                # [0, 1],
-                # [0, -1],
-                # [0, 1],
-                # [0, -1],
-                # [0, 1],
-                # [0, -1],
-                # [0, 1],
-                # [0, -1],
-                # [0, 0, 1],
-                # [0, 0, -1],
-                # [0, 0, 1],
-                # [0, 0, -1],
-                # [0, 1],
-                # [0, -1],
-                # [0, 1],
-                # [0, -1],
                 [0, 1, 0],
                 [0, -1, 0],
                 [0, 1, 0],
@@ -274,15 +247,6 @@ def GenerateInputFileList(basedir, type, metric):
 
 def GenerateModels(regressors, regressorlist, contrastlist):
 
-    # print('Regressors')
-    # print(type(regressors))
-    # print(regressors)
-    # print('RegressorList')
-    # print(type(regressorlist))
-    # print(regressorlist)
-    # print('ContrastList')
-    # print(type(contrastlist))
-    # print(contrastlist)
 
     regressorlist = [regressorlist]
     contrastlist = [contrastlist]

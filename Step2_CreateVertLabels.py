@@ -2,15 +2,7 @@
 """
 ==============
 
-script to remane nifti files based on lines in a csv file with:
-inputfilename, outputfilename
-
-
-MDB and BPM, 2/22/21: first version
-             2/23/21: updated to handle multiple echo files with TEs in the description
-                      ensured .nii and .nii.gz files would both get handled appropriately
-            2/24/21: Added support to download from xnat, convert with dcm2niix, and finished renaming files.
-                    First fully working version.
+nipype routine to iteratively open images to place or modify labels in the volume
 
 """
 
@@ -93,10 +85,7 @@ def main():
                     process = subprocess.run(sctcmd, stdout=subprocess.PIPE,shell=True)
                 else:
                     print('Labels already exists. Use -r flag to reopen existing labels in the viewer.')
-                #code to add labels to existing file
-                #sctcmd = 'sct_label_utils -i ' + labelsmeanimage + ' -create-viewer ' + labelstring + ' -ilabel ' + labelsoutfile + ' -o ' + labelsoutfile
-                #print(sctcmd)
-                #process = subprocess.run(sctcmd, stdout=subprocess.PIPE,shell=True)
+
 
 
 if __name__ == '__main__':

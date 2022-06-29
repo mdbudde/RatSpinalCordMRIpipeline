@@ -3,6 +3,12 @@
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 """
 Spinal Cord Toolbox v4.3 commands through nipype
+
+Note that only the commands that we needed for this project are included.
+So not all of the sct features and flags are included. All of the sct help output
+is included prior to the nipype interface, so it should be easy to add and build on.
+
+
 """
 import os
 import os.path as op

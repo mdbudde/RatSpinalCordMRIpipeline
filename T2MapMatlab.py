@@ -1,5 +1,16 @@
 from nipype.interfaces.base import (CommandLine, traits, TraitedSpec,
                                     BaseInterface, BaseInterfaceInputSpec, File)
+
+
+"""
+Nipype interface to use matlab to create T2 maps through matlab.
+
+It effectively takes a default matlab script, and replaces inputs with explict datapaths.
+Then it simply runs the script.  This is easier than passing function values based on my experience.
+
+
+"""
+
 import os
 import re
 
