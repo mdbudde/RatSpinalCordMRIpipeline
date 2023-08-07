@@ -42,7 +42,7 @@ There is 1 manual step:
 
 
 ## Other secondary files:
-  SCTCommands: nipype interface for spinal cord toolbox\
+  SCTCommands: nipype interface for spinal cord toolbox. Note that we have included many (but not all) of the sct functions/scripts into a nipype interface. It would be really helpful to have these available by the authors of the code (hint, hint) given the widespread use of nipype in the MRI community.\
   DWIMapsMatlab: nipype interface to DWI matlab processing\
   T2MapMatlab: nipype interface to T2 maps in matlab\
 
@@ -53,3 +53,19 @@ There is 1 manual step:
 # Other Notes:
   Nipype technical details: Nipype interfaces were created for the spinal cord toolbox for this project. I only included the functions and features I needed in this pipeline, but it is a start and quite useful in my opinion. It should be grown out to a full-fledged nipype interface and included in the nipype package, in my option, but would also need to be maintained as new options are added to SCT. 
   It uses qMRIlab for T1 mapping and is implemented as a submodule in github.  May need to run `git submodule update --remote` from within the MatlabTools/qMRIlab folder to download the newest version.
+
+
+## Spinal Cord Toolbox for rat data:
+Two manual updates have been made to the spinal cord toolbox to enable it to function better for rat spinal cords: 
+In the file: ${scthome}/spinalcordtoolbox/scripts/sct_register_to_template.py - About line 440: 
+change resolution from "1.0x1.0x1.0" to "0.1x0.1x0.1" on the following two lines (note the suffexes can also be changed for accuracy):
+- resample_file(ftmp_data, add_suffix(ftmp_data, '_0p1mm'), '0.1x0.1x0.1', 'mm', 'linear', verbose)
+- resample_file(ftmp_seg, add_suffix(ftmp_seg, '_0p1mm'), '0.1x0.1x0.1', 'mm', 'linear', verbose)
+
+  
+In the file: ${scthome}/spinalcordtoolbox/registration/core.py - About line 290: 
+change the default resolution of the registration params (note we use the bsplinesyn option):
+- #Modified code: (scale factors by one-tenth)
+ants_registration_params = {'rigid': '', 'affine': '', 'compositeaffine': '', 'similarity': '', 'translation': '', 'bspline': ',1', 'gaussiandisplacementfield': ',3,0', 'bsplinedisplacementfield': ',0.2,1', 'syn': ',0.3,0', 'bsplinesyn': ',0.1,0.3'} # MDB, original 
+- #Original code:
+ants_registration_params = {'rigid': '', 'affine': '', 'compositeaffine': '', 'similarity': '', 'translation': '', # 'bspline': ',10', 'gaussiandisplacementfield': ',3,0', # 'bsplinedisplacementfield': ',5,10', 'syn': ',3,0', 'bsplinesyn': ',1,3'}
